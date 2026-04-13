@@ -1,3 +1,4 @@
+# nix/devShell.nix
 { pkgs
 , lib                    ? pkgs.lib
 , name
@@ -59,8 +60,8 @@ let
       pkgs.gum
       pkgs.toilet
 
-      psToolsModule.vite
-      psToolsModule.vite-cleanup
+      psToolsModule.serve
+      psToolsModule.serve-cleanup
       psToolsModule.spago-watch
       psToolsModule.concurrent
       psToolsModule.bundle
@@ -72,17 +73,12 @@ let
     nativeBuildInputs = [ pkgs.pkg-config ];
 
     shellHook = ''
-      if [ ! -x node_modules/.bin/vite ]; then
-        echo "vite not found in node_modules — running npm install..."
-        npm install
-      fi
-
       echo "Welcome to the ${lib.toSentenceCase name} dev environment!"
       echo ""
       echo "Available commands:"
-      echo "  dev                          concurrent spago-watch + vite HMR"
-      echo "  vite                         start Vite dev server on :${toString appConfig.vite.port}"
-      echo "  vite-cleanup                 kill any process on :${toString appConfig.vite.port}"
+      echo "  dev                          concurrent spago-watch + esbuild serve"
+      echo "  serve                        start esbuild dev server on :${toString appConfig.vite.port}"
+      echo "  serve-cleanup                kill any process on :${toString appConfig.vite.port}"
       echo "  spago-watch [build|test]     watch src/test via entr"
       echo "  bundle                       production build (es mode, minified)"
       echo "  bundle --mode simple         simple esbuild bundle, no DCE"

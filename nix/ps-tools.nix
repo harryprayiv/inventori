@@ -1,18 +1,19 @@
+# nix/ps-tools.nix
 { pkgs, lib ? pkgs.lib, name }:
 
 let
   appConfig = import ./config.nix { inherit name; };
-  vitePort  = toString appConfig.vite.port;
+  servePort = toString appConfig.vite.port;
 
-  vite-cleanup = pkgs.writeShellApplication {
-    name          = "vite-cleanup";
+  serve-cleanup = pkgs.writeShellApplication {
+    name          = "serve-cleanup";
     runtimeInputs = [ pkgs.lsof ];
     text          = ''
-      VITE_PORT="${vitePort}"
+      PORT="${servePort}"
 
-      if lsof -i :"$VITE_PORT" > /dev/null 2>&1; then
-        echo "Found processes on port $VITE_PORT"
-        lsof -t -i :"$VITE_PORT" | while read -r pid; do
+      if lsof -i :"$PORT" > /dev/null 2>&1; then
+        echo "Found processes on port $PORT"
+        lsof -t -i :"$PORT" | while read -r pid; do
           if [ -n "$pid" ]; then
             echo "Killing process $pid"
             kill "$pid" 2>/dev/null || true
@@ -28,23 +29,23 @@ let
             done
           fi
         done
-        if ! lsof -i :"$VITE_PORT" > /dev/null 2>&1; then
+        if ! lsof -i :"$PORT" > /dev/null 2>&1; then
           echo "Successfully cleaned up all processes"
         else
           echo "Failed to clean up some processes"
           exit 1
         fi
       else
-        echo "No processes found on port $VITE_PORT"
+        echo "No processes found on port $PORT"
       fi
     '';
   };
 
-  vite = pkgs.writeShellApplication {
-    name          = "vite";
-    runtimeInputs = [ pkgs.nodejs_20 pkgs.lsof ];
+  serve = pkgs.writeShellApplication {
+    name          = "serve";
+    runtimeInputs = [ pkgs.esbuild pkgs.lsof ];
     text          = ''
-      VITE_PORT="${vitePort}"
+      PORT="${servePort}"
 
       cleanup_port() {
         local port="$1"
@@ -72,12 +73,19 @@ let
         fi
       }
 
-      if lsof -i :"$VITE_PORT" > /dev/null 2>&1; then
-        echo "Port $VITE_PORT is in use. Attempting to clean up..."
-        cleanup_port "$VITE_PORT"
+      if lsof -i :"$PORT" > /dev/null 2>&1; then
+        echo "Port $PORT is in use. Attempting to clean up..."
+        cleanup_port "$PORT"
       fi
 
-      exec node_modules/.bin/vite --port "$VITE_PORT" --open
+      echo "Serving on http://localhost:$PORT"
+      exec esbuild output/Main/index.js \
+        --bundle \
+        --servedir=. \
+        --serve="$PORT" \
+        --platform=browser \
+        --format=esm \
+        --sourcemap
     '';
   };
 
@@ -188,12 +196,12 @@ let
 
   dev = pkgs.writeShellApplication {
     name          = "dev";
-    runtimeInputs = [ spago-watch vite concurrent ];
+    runtimeInputs = [ spago-watch serve concurrent ];
     text          = ''
-      concurrent "spago-watch build" vite
+      concurrent "spago-watch build" serve
     '';
   };
 
 in {
-  inherit vite vite-cleanup spago-watch concurrent bundle dev;
+  inherit serve serve-cleanup spago-watch concurrent bundle dev;
 }
