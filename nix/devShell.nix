@@ -1,4 +1,3 @@
-# nix/devShell.nix
 { pkgs
 , lib                    ? pkgs.lib
 , name
@@ -56,12 +55,15 @@ let
       pkgs.spago-unstable
       pkgs.nodejs_20
       pkgs.esbuild
+      pkgs.miniserve
       pkgs.nixpkgs-fmt
       pkgs.gum
       pkgs.toilet
 
       psToolsModule.serve
       psToolsModule.serve-cleanup
+      psToolsModule.setup-dist
+      psToolsModule.esbuild-watch
       psToolsModule.spago-watch
       psToolsModule.concurrent
       psToolsModule.bundle
@@ -76,15 +78,16 @@ let
       echo "Welcome to the ${lib.toSentenceCase name} dev environment!"
       echo ""
       echo "Available commands:"
-      echo "  dev                          concurrent spago-watch + esbuild serve"
-      echo "  serve                        start esbuild dev server on :${toString appConfig.vite.port}"
+      echo "  dev                          spago-watch + esbuild-watch + miniserve"
+      echo "  serve                        miniserve dist/ on :${toString appConfig.vite.port}"
       echo "  serve-cleanup                kill any process on :${toString appConfig.vite.port}"
+      echo "  esbuild-watch                esbuild in watch mode -> dist/main.js"
+      echo "  setup-dist                   copy index.html/styles.css/inventory.json -> dist/"
       echo "  spago-watch [build|test]     watch src/test via entr"
       echo "  bundle                       production build (es mode, minified)"
       echo "  bundle --mode simple         simple esbuild bundle, no DCE"
       echo "  bundle --no-minify           skip minification"
       echo "  bundle --out <dir>           output directory (default: dist/)"
-      echo "  purs-nix compile             compile via purs-nix"
       echo ""
       toilet ${lib.toSentenceCase name} -t --metal
     '';
