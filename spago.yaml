@@ -1,0 +1,64 @@
+package:
+  name: inventori
+  dependencies:
+    - aff: ">=7.1.0 <8.0.0"
+    - aff-promise: ">=4.0.0 <5.0.0"
+    - arrays: ">=7.3.0 <8.0.0"
+    - console: ">=6.1.0 <7.0.0"
+    - deku-core: "*"
+    - deku-dom: "*"
+    - now
+    - effect: ">=4.0.0 <5.0.0"
+    - either: ">=6.1.0 <7.0.0"
+    - fetch: ">=4.1.0 <5.0.0"
+    - foldable-traversable: ">=6.0.0 <7.0.0"
+    - foreign-object: ">=4.1.0 <5.0.0"
+    - integers: ">=6.0.0 <7.0.0"
+    - lists: ">=7.0.0 <8.0.0"
+    - maybe: ">=6.0.0 <7.0.0"
+    - newtype: ">=5.0.0 <6.0.0"
+    - ordered-collections: ">=3.2.0 <4.0.0"
+    - prelude: ">=6.0.1 <7.0.0"
+    - strings: ">=6.0.1 <7.0.0"
+    - tuples: ">=7.0.0 <8.0.0"
+    - unsafe-coerce: ">=6.0.0 <7.0.0"
+    - web-dom: ">=5.0.0 <6.0.0"
+    - web-events: ">=4.0.0 <5.0.0"
+    - web-file: ">=4.0.0 <5.0.0"
+    - web-html: ">=4.1.0 <5.0.0"
+    - web-storage: ">=5.0.0 <6.0.0"
+    - yoga-json: ">=5.1.0 <6.0.0"
+
+workspace:
+  packageSet:
+    registry: 75.9.1
+  extraPackages:
+    hyrule:
+      git: "https://github.com/mikesol/purescript-hyrule.git"
+      ref: "a2a32e02a0d8518d906ec5fb3192261f63667338"
+      dependencies:
+        - avar
+        - effect
+        - filterable
+        - free
+        - js-timers
+        - random
+        - web-html
+        - unsafe-reference
+        - web-uievents
+    deku-core:
+      git: "https://github.com/mikesol/purescript-deku.git"
+      subdir: deku-core
+      ref: "276f48adde3d9354f61917f7e9ae2ae7b43df6b2"
+      dependencies:
+        - hyrule
+        - untagged-union
+    deku-dom:
+      git: "https://github.com/mikesol/purescript-deku.git"
+      subdir: deku-dom
+      ref: "276f48adde3d9354f61917f7e9ae2ae7b43df6b2"
+      dependencies:
+        - hyrule
+        - web-touchevents
+        - web-pointerevents
+        - untagged-union
