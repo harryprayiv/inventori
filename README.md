@@ -3,7 +3,7 @@
 Inventori is a simple web application that allows users to create simple lists of gear, organizing them into main categories, sub-categories, and individual items. Users can increment or decrement the count of items as needed, rename the inventory list, and export the list as a JSON file.
 
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/77991343-af4e-4913-be94-f1789ca2981d/deploy-status)](https://app.netlify.com/sites/glittery-puffpuff-043120/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/77991343-af4e-4913-be94-f1789ca2981d/deploy-status)](https://app.netlify.com/sites/glittery-puffpuff-043120/deploys) 
 
 ## Features
 
